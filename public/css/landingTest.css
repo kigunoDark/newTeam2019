@@ -1,0 +1,10 @@
+body{
+    background: yellow;
+}
+#navTest{
+    background: black;
+}
+.page-footer{
+    background: black;
+    margin-top:10%; 
+}
