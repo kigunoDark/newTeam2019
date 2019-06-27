@@ -19,12 +19,10 @@ let storage = multer.diskStorage({
 
 const upload = multer({
     storage:storage,
-    fileFilter: function(req,file,cb){
-        checkFileType(file, cb);
-    }
+    fileFilter: checkFileType
 }).single('avatar');
 
-function checkFileType(file, cb) {
+function checkFileType(req,file, cb) {
     const fileTypes = /jpeg|jpg|png/;
     const extname = fileTypes.test(path.extname(file.originalname).toLocaleLowerCase());
     
