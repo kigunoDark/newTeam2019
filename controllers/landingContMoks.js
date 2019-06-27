@@ -41,11 +41,21 @@ exports.getMoksLand = async (req, res) => {
 };
 
 exports.getAvatar = async (req , res) => {
-    const tag = req.params.tag;
-
-    res.render('img',{
-        name:name 
+    const name = req.params.name;
+    UserM.findOne({
+        where: { name : name},
+        attributes:['name','avatar']
+    })
+    .then(user =>{
+        res.render('avatarTest',{
+            name: user.name,
+            avatar: `../uploads/${user.avatar}`
+        });
+    })
+    .catch(err => {
+        console.log(`Error ----> ${err}`);
     });
+    
 };
 
 exports.postMoksland = async (req, res) => {
