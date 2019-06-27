@@ -1,12 +1,14 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var landingRouter = require('./routers/landingRout');
-var sequelize = require('./data/database');
-var PORT =  3000;
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const landingRouter = require('./routers/landingRout');
+const sequelize = require('./data/database');
+const PORT =  3000;
+const path = require('path');
 
 app.set('view engine', 'ejs');
 app.set('vews', 'views');
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(landingRouter);
