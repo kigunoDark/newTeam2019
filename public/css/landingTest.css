@@ -1,10 +1,43 @@
 body{
-    background: yellow;
+    background: black;
 }
+
 #navTest{
     background: black;
 }
 .page-footer{
     background: black;
-    margin-top:10%; 
+   /* margin-top:10%;  */
 }
+
+.section--form-background {
+    background: yellow;
+    padding: 2rem 0;
+
+}
+
+/* .img-avatar {
+    position: fixed;
+    bottom: 0;
+} */
+
+.sticky__footer {
+    position:fixed;
+    bottom:0;
+    background: white;
+    width: 100%
+}
+
+.sticky__footer:before {
+    width: 130%;
+    content: " ";
+    background-image: url(/img/lobster.jpg);
+    background-size: contain;
+    position: absolute;
+    background-repeat: no-repeat;
+    left: 90%;
+    top: -40px;
+    height: 130%;
+    overflow: none;    
+
+ }
