@@ -25,7 +25,7 @@ app.use(function(req, res, next){
   
     // respond with json
     if (req.accepts('json')) {
-      res.send({ error: 'Not found' });
+      res.json({ error: 'Not found' });
       return;
     } 
     // default to plain-text. send()
