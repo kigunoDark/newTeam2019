@@ -8,6 +8,7 @@ router.post('/land-post', landingControl.postLanding);
 
 //My(MAKSIM) Test Code
 router.get('/user',landingControlMoks.authentication);
+router.get('/logout',landingControlMoks.logout);
 
 router.get('/loginmoks',landingControlMoks.getLogin);
 router.post('/loginmoks',landingControlMoks.postLogin);

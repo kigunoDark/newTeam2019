@@ -49,7 +49,6 @@ async function isLoggedIn (req) {
     } catch (error) {
         result.status = false;
     }
-    console.log(`isLoggedIn-----> ${result}`);
     return result;
 };
 
@@ -155,11 +154,15 @@ exports.postLogin = async (req , res) => {
 
 exports.authentication = async (req, res) => {
     const user = await isLoggedIn(req);
-    console.log(`authentication function ---> ${user}`);
     if(user.status){
         console.log(`user ${user.name} авторизовался`);
         res.status(200).send(`name - ${user.name}<br> id - ${user.id}<br> avatar - ${user.avatar}`);
     }else{ 
         res.status(401).send('Вы не авторизованы');
     }
+};
+
+exports.logout = async  (req,res) => {
+    res.clearCookie('seals');
+    res.redirect('/');
 };
