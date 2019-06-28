@@ -34,8 +34,33 @@ function checkFileType(req,file, cb) {
     };
 };
 
+//authentication  function
+async function isLoggedIn (req) {
+    const result = {};
+    try {
+        let user = await UserM.findOne({
+            where: { cookie : req.cookies.seals},
+            attributes:['name','avatar','id']
+        });
+        result.name = user.name;
+        result.avatar = user.avatar;
+        result.id = user.id;
+        result.status = true;
+    } catch (error) {
+        result.status = false;
+    }
+    console.log(`isLoggedIn-----> ${result}`);
+    return result;
+};
+
 exports.getMoksLand = async (req, res) => {
-    res.render('moks', {
+    res.render('moks/moks', {
+        msg: null
+    });
+};
+
+exports.getLogin = async (req,res) => {
+    res.render('moks/login',{
         msg: null
     });
 };
@@ -47,7 +72,7 @@ exports.getAvatar = async (req , res) => {
         attributes:['name','avatar']
     })
     .then(user =>{
-        res.render('avatarTest',{
+        res.render('moks/avatarTest',{
             name: user.name,
             avatar: `../uploads/${user.avatar}`
         });
@@ -61,7 +86,7 @@ exports.getAvatar = async (req , res) => {
 exports.postMoksland = async (req, res) => {
     upload(req, res, (err) => {
         if(err){
-          res.render('moks', {
+          res.render('moks/moks', {
             msg: err
           });
         } else {
@@ -69,12 +94,17 @@ exports.postMoksland = async (req, res) => {
                    .update(req.body.password)
                    .digest('hex');
 
+            const cookie = crypto.createHmac('sha256', 'SEALS')
+            .update(uuid())
+            .digest('hex');
+
             console.log('MOKS this is a new user: ' + req.body.name + ' ' + req.body.avatar + " " + hash);
             
             UserM.create({
                 name:req.body.name,
                 password:hash,
-                avatar:req.body.avatar
+                avatar:req.body.avatar,
+                cookie:cookie
             })
             .then(user => {
                 console.log(`MOKS this is a new user: 
@@ -82,10 +112,11 @@ exports.postMoksland = async (req, res) => {
                 AVATAR: ${user.avatar}
                 PASSWORD: ${hash}`);
 
-                res.status(200).send('ok');
+                res.cookie('seals',cookie, { maxAge:86400000, httpOnly: true });
+                res.status(201).send('ok');
             })
             .catch(err =>{
-                res.render('moks', {
+                res.render('moks/moks', {
                     msg: err
                   });
                 console.log(err);
@@ -93,4 +124,42 @@ exports.postMoksland = async (req, res) => {
         }
     
     });
+};
+
+exports.postLogin = async (req , res) => {
+    console.log(req.body)
+    const hash = crypto.createHmac('sha256', 'SEALS')
+                   .update(req.body.password)
+                   .digest('hex');
+    UserM.findOne({
+        where: { name : req.body.name},
+        attributes:['password' , 'cookie']
+    })
+    .then(user => {
+        if(user.password === hash){
+            console.log(`${req.body.name} авторизировался`)
+            res.cookie('seals',user.cookie, { maxAge:86400000, httpOnly: true });
+            res.status(200).send(`С возвращением ${req.body.name}`);
+        }else{
+            res.render('moks/login',{
+                msg: 'Неверный Пароль'
+            });
+        }
+    })
+    .catch(err =>{
+        res.render('moks/login',{
+            msg: 'Пользователя с таким именем не существует' 
+        });
+    })
+};
+
+exports.authentication = async (req, res) => {
+    const user = await isLoggedIn(req);
+    console.log(`authentication function ---> ${user}`);
+    if(user.status){
+        console.log(`user ${user.name} авторизовался`);
+        res.status(200).send(`name - ${user.name}<br> id - ${user.id}<br> avatar - ${user.avatar}`);
+    }else{ 
+        res.status(401).send('Вы не авторизованы');
+    }
 };

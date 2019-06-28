@@ -6,6 +6,12 @@ const landingControlMoks = require('../controllers/landingContMoks');
 router.get('/', landingControl.getLanding);
 router.post('/land-post', landingControl.postLanding);
 
+//My(MAKSIM) Test Code
+router.get('/user',landingControlMoks.authentication);
+
+router.get('/loginmoks',landingControlMoks.getLogin);
+router.post('/loginmoks',landingControlMoks.postLogin);
+
 router.get('/moks', landingControlMoks.getMoksLand);
 router.post('/moks', landingControlMoks.postMoksland);
 
